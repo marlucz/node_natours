@@ -1,6 +1,9 @@
 // IMPORTS
+const dotenv = require('dotenv');
 const express = require('express');
 const morgan = require('morgan');
+
+dotenv.config({ path: './config.env' });
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -15,7 +18,6 @@ app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
-  console.log('Hello from the middleware');
   next();
 });
 
