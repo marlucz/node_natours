@@ -10,6 +10,7 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+// ---------------- GET ALL TOURS -------------------
 app.get('/api/v1/tours', (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -19,6 +20,31 @@ app.get('/api/v1/tours', (req, res) => {
     }
   });
 });
+
+// ---------------- GET SINGLE TOUR -------------------
+
+app.get('/api/v1/tours/:id', (req, res) => {
+  console.log(req.params);
+  const id = req.params.id * 1;
+  const tour = tours.find(el => el.id === id);
+
+  // if (id > tours.length) {
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour
+    }
+  });
+});
+
+// ---------------- ADD SINGLE TOUR -------------------
 
 app.post('/api/v1/tours', (req, res) => {
   // console.log(req.body);
@@ -40,6 +66,40 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
+});
+
+// ---------------- DELETE TOUR -------------------
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here>'
+    }
+  });
+});
+
+// ---------------- DELETE TOUR -------------------
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
 });
 
 //
