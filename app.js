@@ -1,9 +1,6 @@
 // IMPORTS
-const dotenv = require('dotenv');
 const express = require('express');
 const morgan = require('morgan');
-
-dotenv.config({ path: './config.env' });
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
