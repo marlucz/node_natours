@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-// HANDLE UNCAUGHT EXCEPTION - node is in unclean state - server need to be restarted
-
-process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION! Shutting down...');
-  console.log(err.name, err.message);
-
-  server.close(() => {
-    process.exit(1);
-  });
-});
-
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
@@ -27,7 +16,9 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false
   })
-  .then(() => console.log('DB connection succesful'));
+  .then(() =>
+    console.log(`DB connected successfully in ${process.env.NODE_ENV} mode`)
+  );
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () =>
@@ -38,6 +29,17 @@ const server = app.listen(port, () =>
 
 process.on('unhandledRejection', err => {
   console.log('UNHANDLED REJECTION! Shutting down...');
+  console.log(err.name, err.message);
+
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// HANDLE UNCAUGHT EXCEPTION - node is in unclean state - server need to be restarted
+
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION! Shutting down...');
   console.log(err.name, err.message);
 
   server.close(() => {
