@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-// middleware handling unhandled routes - ALWAYS SHOULF STAND AT THE LAST PLACE OF THE ROUTES!
+// middleware handling unhandled routes - ALWAYS SHOULD STAND AT THE LAST PLACE OF THE ROUTES!
 app.all('*', (req, res, next) => {
   // res.status(404).json({
   //   status: 'Fail',
