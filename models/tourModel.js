@@ -125,6 +125,13 @@ tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
 
+// VIRTUAL POPULATE reviews - thanks to that you don't have to embed/reference reviews to tour
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id', // field in this model which connects this model with the referenced model (in this case TOUR ID)
+  foreignField: 'tour' // field in reference model (review) that shows connection to this model (tour)
+});
+
 // DOCUMENT MIDDLEWARE: runs before .save() and .create()
 tourSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
