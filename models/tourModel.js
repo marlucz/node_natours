@@ -34,7 +34,8 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
       min: [1, 'Rating must be above or equal to 1.0'],
-      max: [5, 'Rating must be below or equal to 5.0']
+      max: [5, 'Rating must be below or equal to 5.0'],
+      set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {
       type: Number,
@@ -125,6 +126,8 @@ const tourSchema = new mongoose.Schema(
 // tourSchema.index({ price: 1 });
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+//index for geospatial functionality
+tourSchema.index({ startLocation: '2dsphere' });
 
 // VIRTUAL PROPERTY: not saved to database, calculated every time there is request to db
 tourSchema.virtual('durationWeeks').get(function() {
@@ -173,10 +176,10 @@ tourSchema.post(/^find/, function(docs, next) {
 });
 
 // AGGREGATION MIDDLEWARES: point into current aggregation model
-tourSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// tourSchema.pre('aggregate', function(next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 

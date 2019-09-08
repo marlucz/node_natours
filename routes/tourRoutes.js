@@ -7,7 +7,7 @@ const router = express.Router();
 
 // router.param('id', tourController.checkID);
 
-// express nestet route
+// express nested route
 router.use('/:tourId/reviews', reviewRouter);
 
 router
@@ -22,6 +22,13 @@ router
     authController.restrictTo('admin', 'lead-guide', 'guide'),
     tourController.getMonthlyPlan
   );
+
+//route to find tours within given radius based on your latitude/longitude
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+
+router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
 
 router
   .route('/')
