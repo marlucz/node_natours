@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Tour = require('./tourModel');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -43,6 +44,51 @@ reviewSchema.pre(/^find/, function(next) {
   this.populate(opts);
 
   next();
+});
+
+// static function to calculate average tour rating
+reviewSchema.statics.calcAverageRatings = async function(tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId }
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' }
+      }
+    }
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[1].avgRating
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5
+    });
+  }
+};
+
+reviewSchema.post('save', function() {
+  // this points to current review
+  // this.constructor = Review
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  // in query middleware you have only acces to the query itself, so await query will give you the review object
+  this.r = await this.findOne(); // this.r - saving results from pre middleware to an object parameter so we can use it in post middleware
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  // await this.findOne(); does NOT work here, query is already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);

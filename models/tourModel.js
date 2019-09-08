@@ -120,12 +120,18 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// set index for querying so the database don't have to examine all items
+// very helpful with huge amount of data to query
+// tourSchema.index({ price: 1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 // VIRTUAL PROPERTY: not saved to database, calculated every time there is request to db
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
 
-// VIRTUAL POPULATE reviews - thanks to that you don't have to embed/reference reviews to tour
+// VIRTUAL POPULATE reviews - thanks to that you don't have to embed reviews to tour
 tourSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id', // field in this model which connects this model with the referenced model (in this case TOUR ID)
