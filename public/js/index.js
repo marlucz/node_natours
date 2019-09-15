@@ -21,8 +21,10 @@ if (mapBox) {
 if (loginForm) {
   loginForm.addEventListener('submit', e => {
     e.preventDefault();
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+
     login(email, password);
   });
 }
@@ -32,10 +34,18 @@ if (logOutBtn) logOutBtn.addEventListener('click', logout);
 if (userDataForm)
   userDataForm.addEventListener('submit', e => {
     e.preventDefault();
-    const email = document.getElementById('email-update').value;
-    const name = document.getElementById('name-update').value;
 
-    updateSettings({ name, email }, 'data');
+    // using FormData to be able to append photo to be updated
+    const form = new FormData();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const file = document.getElementById('photo').files[0];
+
+    form.append('name', name);
+    form.append('email', email);
+    form.append('photo', file);
+
+    updateSettings(form, 'data');
   });
 
 if (userPasswordForm)

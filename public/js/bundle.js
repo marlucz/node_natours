@@ -8511,9 +8511,10 @@ function () {
             res = _context.sent;
 
             if (res.data.status === 'success') {
+              (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully"));
               window.setTimeout(function () {
-                (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully"));
-              });
+                location.reload(true);
+              }, 2000);
             }
 
             _context.next = 11;
@@ -8828,13 +8829,16 @@ if (loginForm) {
 
 if (logOutBtn) logOutBtn.addEventListener('click', _login.logout);
 if (userDataForm) userDataForm.addEventListener('submit', function (e) {
-  e.preventDefault();
-  var email = document.getElementById('email-update').value;
-  var name = document.getElementById('name-update').value;
-  (0, _updateSettings.updateSettings)({
-    name: name,
-    email: email
-  }, 'data');
+  e.preventDefault(); // using FormData to be able to append photo to be updated
+
+  var form = new FormData();
+  var name = document.getElementById('name').value;
+  var email = document.getElementById('email').value;
+  var file = document.getElementById('photo').files[0];
+  form.append('name', name);
+  form.append('email', email);
+  form.append('photo', file);
+  (0, _updateSettings.updateSettings)(form, 'data');
 });
 if (userPasswordForm) userPasswordForm.addEventListener('submit',
 /*#__PURE__*/
@@ -8905,7 +8909,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61627" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49761" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
