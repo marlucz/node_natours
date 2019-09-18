@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
+// HANDLE UNCAUGHT EXCEPTION - node is in unclean state - server need to be restarted
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
@@ -37,13 +44,9 @@ process.on('unhandledRejection', err => {
   });
 });
 
-// HANDLE UNCAUGHT EXCEPTION - node is in unclean state - server need to be restarted
-
-process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION! Shutting down...');
-  console.log(err.name, err.message);
-
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
   server.close(() => {
-    process.exit(1);
+    console.log('💥 Process terminated!');
   });
 });

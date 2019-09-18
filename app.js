@@ -20,6 +20,9 @@ const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
+// enable setting req.headers in authController
+app.enable('trust proxy');
+
 // set render engine to pug
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
