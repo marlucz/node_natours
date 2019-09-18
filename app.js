@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -28,6 +29,22 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // GLOBAL MIDDLEWARES
+
+// Implement CORS - allow everyone to access to get/post requests
+app.use(cors());
+// api.natours.com, frontend natours.com
+// would allow only natours.com origin to access to api
+// app.use(
+//   cors({
+//     origin: 'https://www.natours.com'
+//   })
+// );
+
+// http method to allow all complex routes
+app.options('*', cors());
+
+// allow access to only specific route
+// app.options('/api/v1/tours/:id', cors());
 
 // Serving static files
 // app.use(express.static(`${__dirname}/public`));
