@@ -16,9 +16,10 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false
   })
-  .then(() =>
-    console.log(`DB connected successfully in ${process.env.NODE_ENV} mode`)
-  );
+  .then(() => console.log('Successful database connection'));
+// .then(() =>
+//   console.log(`DB connected successfully in ${process.env.NODE_ENV} mode`)
+// );
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () =>
